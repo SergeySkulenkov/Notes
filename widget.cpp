@@ -8,7 +8,8 @@
 #include <QAction>
 #include "stylehelper.h"
 #include <QPixmap>
-
+#include "editor.h"
+#include <QBoxLayout>
 Widget::Widget(QWidget *parent)
     : QWidget(parent)
     , ui(new Ui::Widget)
@@ -21,6 +22,16 @@ Widget::Widget(QWidget *parent)
     setTheme();
     connect(ui->maxWindowButton,   &QPushButton::clicked, this, &Widget::maxButtonSlot);
     connect(ui->closeWindowButton, &QPushButton::clicked, this, &QWidget::close);
+
+    ui->splitter->setStretchFactor(0,0);
+    ui->splitter->setStretchFactor(1,0);
+    ui->splitter->setStretchFactor(2,1);
+
+    editor = new Editor;
+
+    QBoxLayout* box = new QBoxLayout(QBoxLayout::TopToBottom);
+    ui->editorWidget->setLayout(box);
+    box->addWidget(editor);
 
 }
 
@@ -119,9 +130,6 @@ MouseType Widget::checkCollision(const QPointF &mousePos)
     }else{
         return MouseType::None;
     }
-
-
-
 }
 
 void Widget::changeCursor()

@@ -43,6 +43,7 @@ else()
         add_executable(NotesProject
             ${PROJECT_SOURCES}
             assets/themes/standart.json
+            editor.h editor.cpp editor.ui
         )
     endif()
 endif()

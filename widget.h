@@ -9,6 +9,7 @@ class Widget;
 }
 class QMouseEvent;
 class StyleHelper;
+class Editor;
 QT_END_NAMESPACE
 
 enum class MouseType{
@@ -43,6 +44,7 @@ private:
     MouseType    mouseClickType;
     QPoint       mousePreviousPosition;
     StyleHelper* styleHelper;
+    Editor*      editor;
 
     void setWindowProperties();
     void setMainMenu();
