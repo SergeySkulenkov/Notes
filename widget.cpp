@@ -43,14 +43,18 @@ Widget::~Widget()
 void Widget::mousePressEvent(QMouseEvent *event)
 {
     if(event->button()==Qt::LeftButton){
+        isRelease = 0;
         mousePreviousPosition = event->pos();
+        qDebug () << mousePreviousPosition;
         mouseClickType = checkCollision(event->screenPos());
-        changeCursor();
+        if(!isMaximized())
+            changeCursor();
     }
 }
 void Widget::mouseReleaseEvent(QMouseEvent *event)
 {
     if(event->button()==Qt::LeftButton){
+        isRelease = 1;
         mouseClickType = MouseType::None;
         changeCursor();
     }
@@ -58,7 +62,8 @@ void Widget::mouseReleaseEvent(QMouseEvent *event)
 void Widget::mouseMoveEvent(QMouseEvent* event )
 {
     QPointF position = event->screenPos();
-    changeCursor(checkCollision(position));
+    if(!isMaximized() and isRelease)
+        changeCursor(checkCollision(position));
 
     switch (mouseClickType) {
     case MouseType::Top:
@@ -87,22 +92,61 @@ void Widget::mouseMoveEvent(QMouseEvent* event )
              mousePreviousPosition = event->pos();
         }
         break;
+    case MouseType::TopLeft:
+        if (!isMaximized()) {
+             int deltaX = mapToGlobal(event->pos()).x()-x();
+             int deltaY = event->y() - mousePreviousPosition.y();
+             setGeometry(mapToGlobal(event->pos()).x(), y() + deltaY, width() - deltaX, height() - deltaY);
+             mousePreviousPosition = event->pos();
+        }
+        break;
+    case MouseType::TopRight:
+        if (!isMaximized()) {
+             int deltaX = event->x() - mousePreviousPosition.x();
+             int deltaY = event->y() - mousePreviousPosition.y();
+             setGeometry(x(), y() + deltaY, width() + deltaX, height() - deltaY);
+             mousePreviousPosition = event->pos();
+        }
+        break;
+
+    case MouseType::BottomLeft:
+        if (!isMaximized()) {
+             int deltaX = mapToGlobal(event->pos()).x()-x();
+             int deltaY = event->y() - mousePreviousPosition.y();
+             setGeometry(mapToGlobal(event->pos()).x(), y(), width() - deltaX, height() + deltaY);
+             mousePreviousPosition = event->pos();
+        }
+        break;
+    case MouseType::BottomRight:
+        if (!isMaximized()) {
+             int deltaX = event->x() - mousePreviousPosition.x();
+             int deltaY = event->y() - mousePreviousPosition.y();
+             setGeometry(x(), y(), width() + deltaX, height() + deltaY);
+             mousePreviousPosition = event->pos();
+        }
+        break;
     case MouseType::MainTop:
         if(isMaximized()){
-            int newWidth = width()-100;
-            int newHeight = height()-100;
-            this->layout()->setMargin(9);
-            this->showNormal();
-            setGeometry(50, 0, newWidth, newHeight);
+             int newWidth = width()-100;
+             int newHeight = height()-100;
+             this->layout()->setMargin(9);
+             this->showNormal();
+             setGeometry(50, 0, newWidth, newHeight);
         }else{
-            int deltaX = event->x() - mousePreviousPosition.x();
-            int deltaY = event->y() - mousePreviousPosition.y();
-            setGeometry(x() + deltaX, y() + deltaY, width(), height());
+             int deltaX = event->x() - mousePreviousPosition.x();
+             int deltaY = event->y() - mousePreviousPosition.y();
+             setGeometry(x() + deltaX, y() + deltaY, width(), height());
         }
         break;
     case MouseType::None:
         break;
     }
+}
+
+void Widget::mouseDoubleClickEvent(QMouseEvent *event)
+{
+    qDebug() << "DoubleClick";
+    maxButtonSlot();
 }
 
 MouseType Widget::checkCollision(const QPointF &mousePos)
@@ -112,11 +156,16 @@ MouseType Widget::checkCollision(const QPointF &mousePos)
     float winWidth  = this->width();
     float winHeight = this->height();
 
-    QRectF rectTop    = {winX + 10, winY,  winWidth  - 20, 9};
-    QRectF rectBottom = {winX + 10, winY + winHeight - 9,  winWidth - 20, 9};
-    QRectF rectLeft   = {winX, winY + 10,  9,  winHeight - 20};
-    QRectF rectRight  = {winX + winWidth - 9,  winY + 10,  9, winHeight - 20};
+    QRectF rectTop    = {winX + 20, winY,  winWidth  - 40, 9};
+    QRectF rectBottom = {winX + 20, winY + winHeight - 9,  winWidth - 40, 9};
+    QRectF rectLeft   = {winX, winY + 20,  9,  winHeight - 40};
+    QRectF rectRight  = {winX + winWidth - 9,  winY + 20,  9, winHeight - 40};
+    QRectF rectTopLeft  = {winX,  winY,  15, 15};
+    QRectF rectTopRight  = {winX + winWidth - 15,  winY,  15, 15};
+    QRectF rectBottomLeft = {winX,  winY + winHeight - 15,  15, 15};
+    QRectF rectBottomRight = {winX + winWidth - 15,  winY + winHeight - 15,  15,15};
     QRectF rectMainTop= {winX + 10, winY + 10, winWidth -  20, 30};
+
     if(rectTop.contains(mousePos)){
         return MouseType::Top;
     }else if(rectBottom.contains(mousePos)){
@@ -125,6 +174,14 @@ MouseType Widget::checkCollision(const QPointF &mousePos)
         return MouseType::Left;
     }else if(rectRight.contains(mousePos)){
         return MouseType::Right;
+    }else if(rectTopLeft.contains(mousePos)){
+        return MouseType::TopLeft;
+    }else if(rectTopRight.contains(mousePos)){
+        return MouseType::TopRight;
+    }else if(rectBottomLeft.contains(mousePos)){
+        return MouseType::BottomLeft;
+    }else if(rectBottomRight.contains(mousePos)){
+        return MouseType::BottomRight;
     }else if(rectMainTop.contains(mousePos)){
         return MouseType::MainTop;
     }else{
@@ -151,6 +208,18 @@ void Widget::changeCursor(MouseType type)
         break;
     case MouseType::Right:
         setCursor(Qt::SizeHorCursor);
+        break;
+    case MouseType::TopLeft:
+        setCursor(Qt::SizeFDiagCursor);
+        break;
+    case MouseType::TopRight:
+        setCursor(Qt::SizeBDiagCursor);
+        break;
+    case MouseType::BottomLeft:
+        setCursor(Qt::SizeBDiagCursor);
+        break;
+    case MouseType::BottomRight:
+        setCursor(Qt::SizeFDiagCursor);
         break;
     case MouseType::MainTop:
         setCursor(QCursor());

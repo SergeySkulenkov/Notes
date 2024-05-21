@@ -18,6 +18,10 @@ enum class MouseType{
     Bottom,
     Left,
     Right,
+    TopLeft,
+    TopRight,
+    BottomLeft,
+    BottomRight,
     MainTop
 };
 
@@ -33,6 +37,7 @@ protected:
     void mousePressEvent(QMouseEvent *event);
     void mouseReleaseEvent(QMouseEvent *event);
     void mouseMoveEvent(QMouseEvent *event);
+    void mouseDoubleClickEvent(QMouseEvent *event);
 
 private slots:
     void maxButtonSlot();
@@ -45,6 +50,7 @@ private:
     QPoint       mousePreviousPosition;
     StyleHelper* styleHelper;
     Editor*      editor;
+    bool isRelease = 1;
 
     void setWindowProperties();
     void setMainMenu();
