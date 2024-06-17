@@ -1,0 +1,63 @@
+{
+    "name":"Standart",
+    "windowTitle":{
+        "icon": "assets/themes/standart/ico.png",
+        "background-color":"#333"
+    },
+    "mainMenu":{
+        "color":"#ffffff",
+        "item-selected-background-color":"#656565",
+        "item-pressed-background-color":"#6f6f6f",
+        "item-padding":"5px"
+    },
+    "windowButtons":{
+        "minimaze-button":{
+            "normal":{
+                "qproperty-icon":"url(assets/themes/standart/min-btn.png)",
+                "border":"none"
+            },
+            "hover":{
+                "background":"#454545"
+            },
+            "pressed":{
+                "background":"#373737"
+            }
+        },
+        "maximaze-button":{
+            "normal":{
+                "qproperty-icon":"url(assets/themes/standart/max-btn.png)",
+                "border":"none"
+            },
+            "hover":{
+                "background":"#454545"
+            },
+            "pressed":{
+                "background":"#373737"
+            }
+        },
+        "normal-button":{
+            "normal":{
+                "qproperty-icon":"url(assets/themes/standart/normal-btn.png)",
+                "border":"none"
+            },
+            "hover":{
+                "background":"#454545"
+            },
+            "pressed":{
+                "background":"#373737"
+            }
+        },
+        "close-button":{
+            "normal":{
+                "background":"url(assets/themes/standart/close-btn.png) no-repeat center center",
+                "border":"none"
+            },
+            "hover":{
+                "background":"#ee3520 url(assets/themes/standart/close-btn-hover.png) no-repeat center center"
+            },
+            "pressed":{
+                "background":"#ee3520 url(assets/themes/standart/close-btn-hover.png) no-repeat center center"
+            }
+        }
+    }
+}
