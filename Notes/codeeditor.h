@@ -62,7 +62,6 @@ QT_END_NAMESPACE
 
 class LineNumberArea;
 
-//![codeeditordefinition]
 
 class CodeEditor : public QPlainTextEdit
 {
@@ -86,8 +85,6 @@ private:
     QWidget *lineNumberArea;
 };
 
-//![codeeditordefinition]
-//![extraarea]
 
 class LineNumberArea : public QWidget
 {

@@ -7,6 +7,7 @@
 #include "checker.h"
 #include "highlighter.h"
 #include "codeeditor.h"
+#include "database.h"
 
 namespace Ui {
 class Editor;
@@ -19,6 +20,7 @@ class Editor : public QFrame
 public:
     explicit Editor(QWidget *parent = nullptr);
     ~Editor();
+    void setData(const Note& note);
 
 private slots:
     void testEditor();

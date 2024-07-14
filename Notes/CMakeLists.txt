@@ -32,6 +32,10 @@ set(PROJECT_SOURCES
         codeeditor.cpp
         highlighter.h
         highlighter.cpp
+        database.h
+        database.cpp
+        sqlite/sqlite3.h
+        sqlite/sqlite3.c
 )
 
 if(${QT_VERSION_MAJOR} GREATER_EQUAL 6)

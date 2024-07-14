@@ -20,14 +20,14 @@
    <item>
     <layout class="QHBoxLayout" name="horizontalLayout_2">
      <item>
-      <widget class="QLineEdit" name="lineEdit">
+      <widget class="QLineEdit" name="titleLabel">
        <property name="text">
         <string>Заголовок</string>
        </property>
       </widget>
      </item>
      <item>
-      <widget class="QLabel" name="label">
+      <widget class="QLabel" name="dateLabel">
        <property name="text">
         <string>Дата</string>
        </property>
@@ -99,7 +99,7 @@
        </widget>
       </item>
       <item>
-       <widget class="QLineEdit" name="lineEdit_2">
+       <widget class="QLineEdit" name="keywordsEdit">
         <property name="text">
          <string>ключевые, слова</string>
         </property>

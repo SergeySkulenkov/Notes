@@ -59,5 +59,67 @@
                 "background":"#ee3520 url(assets/themes/standart/close-btn-hover.png) no-repeat center center"
             }
         }
+    },
+    "leftColumn":{
+        "background":"#2d2d2d",
+        "add-button":{
+            "normal":{
+                "qproperty-icon":"url(assets/themes/standart/plus-left.png)",
+                "border":"none",
+                "background":"#444444",
+                "border-top-left-radius":"3px",
+                "border-bottom-left-radius":"3px"
+            },
+            "hover":{
+                "background":"#555555"
+            },
+            "pressed":{
+                "background":"#474747"
+            }
+        },
+        "add-combobox":{
+            "border":"none",
+            "border-left":"1px solid #555555",
+            "background":"#444444",
+            "border-top-right-radius":"3px",
+            "border-bottom-right-radius":"3px",
+            "color":"#cccccc",
+            "font-size":"12px",
+            "padding-left":"10px"
+        },
+        "add-combobox-drop-down":{
+            "border-top-right-radius":"3px",
+            "border-bottom-right-radius":"3px",
+            "width":"3px"
+        },
+        "add-combobox-item-view":{
+            "background":"#ffffff"
+        },
+        "add-combobox-item":{
+            "padding":"5px"
+        },
+        "toolbox-page":{
+            "background":"#3a3a3a"
+        },
+        "toolbox-tab":{
+            "background":"#2d2d2d",
+            "color":"#eeeeee",
+            "font-size":"14px",
+            "border":"none"
+        },
+        "toolbox-tab-selected":{
+            "background":"#474747",
+            "border-radius":"3px",
+            "color":"#eeeeee"
+
+        },
+        "toolbox-tab-height": 30,
+        "toolbox-tab-notepads-icon": "assets/themes/standart/notepad_ite.png",
+        "toolbox-tab-tasks-icon": "assets/themes/standart/check_item.png",
+        "toolbox-tab-notes-icon": "assets/themes/standart/notepad_ite.png",
+        "tree-widget":{
+
+        }
+
     }
 }

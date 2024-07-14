@@ -10,28 +10,28 @@
 #include <QPixmap>
 #include "editor.h"
 #include <QBoxLayout>
+#include <QMessageBox>
+#include <QStyledItemDelegate>
+
 Widget::Widget(QWidget *parent)
     : QWidget(parent)
     , ui(new Ui::Widget)
 {
     ui->setupUi(this);
 
-    setWindowProperties();
-    setMainMenu();
-    styleHelper = new StyleHelper;
-    setTheme();
-    connect(ui->maxWindowButton,   &QPushButton::clicked, this, &Widget::maxButtonSlot);
-    connect(ui->closeWindowButton, &QPushButton::clicked, this, &QWidget::close);
+    setWindowProperties();                  //Меняем свойства окна
+    setupMainMenu();                        //Устанавливаем главное меню
+    styleHelper = new StyleHelper;          //Объект для работы с внешним видом виджетов
+    setTheme();                             //Настраиваем внешний вид виджетов
+    setupEditor();                          //Устанавливаем виджет редактора
+    loadData();                             //Загрузка данных
+    ui->toolBox->setCurrentIndex(0);
+    ui->notepadsTreeWidget->setSizeAdjustPolicy(QAbstractScrollArea::AdjustToContents);
+    ui->notepadsTreeWidget->adjustSize();
+    ui->notepadsPage->adjustSize();
+    qDebug() << ui->notepadsTreeWidget->sizeHint();
 
-    ui->splitter->setStretchFactor(0,0);
-    ui->splitter->setStretchFactor(1,0);
-    ui->splitter->setStretchFactor(2,1);
 
-    editor = new Editor;
-
-    QBoxLayout* box = new QBoxLayout(QBoxLayout::TopToBottom);
-    ui->editorWidget->setLayout(box);
-    box->addWidget(editor);
 
 }
 
@@ -56,14 +56,15 @@ void Widget::mouseReleaseEvent(QMouseEvent *event)
     if(event->button()==Qt::LeftButton){
         isRelease = 1;
         mouseClickType = MouseType::None;
-        changeCursor();
+        changeCursor(MouseType::None);
     }
 }
 void Widget::mouseMoveEvent(QMouseEvent* event )
 {
     QPointF position = event->screenPos();
-    if(!isMaximized() and isRelease)
+    if(!isMaximized() and isRelease){
         changeCursor(checkCollision(position));
+    }
 
     switch (mouseClickType) {
     case MouseType::Top:
@@ -143,10 +144,21 @@ void Widget::mouseMoveEvent(QMouseEvent* event )
     }
 }
 
-void Widget::mouseDoubleClickEvent(QMouseEvent *event)
+void Widget::mouseDoubleClickEvent(QMouseEvent* event)
 {
-    qDebug() << "DoubleClick";
+    Q_UNUSED(event);
     maxButtonSlot();
+}
+
+bool Widget::eventFilter(QObject *target, QEvent *event)
+{
+    if (target == ui->leftColumnWidget || target == ui->middleColumnWidget || target == ui->editorWidget) {
+
+        if (event->type() == QEvent::MouseMove) {
+            mouseMoveEvent(static_cast<QMouseEvent*>(event));
+        }
+    }
+    return QWidget::eventFilter(target, event);
 }
 
 MouseType Widget::checkCollision(const QPointF &mousePos)
@@ -226,6 +238,7 @@ void Widget::changeCursor(MouseType type)
         break;
     default:
         setCursor(QCursor());
+
         break;
     }
 }
@@ -245,6 +258,83 @@ void Widget::setTheme()
 
     ui->closeWindowButton->setFixedSize(StyleHelper::winBtnSize);
     ui->closeWindowButton->setStyleSheet(styleHelper->getCloseButtonStyle());
+
+    ui->leftAddLayout->setMargin(0);
+    ui->leftAddLayout->setSpacing(0);
+    ui->leftAddButton->setFixedSize(26,26);
+    ui->addComboBox->setFixedHeight(26);
+    ui->leftColumnWidget->setStyleSheet(styleHelper->getLeftColumnStyle());
+    ui->notepadsPage->setStyleSheet(styleHelper->getLeftPageStyle());
+    ui->toolBox->setStyleSheet(styleHelper->getLeftTabTitleStyle());
+    ui->toolBox->layout()->setSpacing(0);
+    int tabNum = 0;
+    foreach( QWidget* w, ui->toolBox->findChildren<QWidget*>() )
+    {
+        if( w->inherits("QToolBoxButton") )
+        {
+            tabNum ++;
+            QAbstractButton* button = qobject_cast<QAbstractButton*>(w);
+            if(tabNum==1){
+                button->setIcon(QIcon(styleHelper->getIconPath(Tab::NOTEPADS)));
+            }
+            if(tabNum==2){
+                button->setIcon(QIcon(styleHelper->getIconPath(Tab::TASKS)));
+            }
+            if(tabNum==3){
+                button->setIcon(QIcon(styleHelper->getIconPath(Tab::NOTES)));
+            }
+            button->setMinimumHeight(styleHelper->getTabHeight());
+        }
+    }
+    qDebug() << styleHelper->getLeftTabTitleStyle();
+    ui->LeftScrollAreaWidgetContents->layout()->setContentsMargins(0,0,0,0);
+    ui->addComboBox->view()->setItemDelegate(new QStyledItemDelegate(this));
+
+    ui->notepadsTreeWidget->setStyleSheet("QTreeWidget{"
+                                          "border:none;"
+                                          "font-size:14px;"
+                                          "}"
+                                          "QTreeView::item{"
+                                          "font-size:12px;"
+                                          "color:#aaa;"
+                                          "background:transparent;"
+
+                                          "}"
+                                          "QTreeView::item:selected{"
+                                          "color:#ddd;"
+                                          "}"
+                                          "QTreeView::item:hover, QTreeView::item:hover{"
+                                          "color:#fff;"
+                                          "}"
+                                        );
+    ui->notepadsTreeWidget->viewport()->setFocusPolicy(Qt::NoFocus);
+
+
+}
+
+void Widget::loadData()
+{
+    if(!dataBase.connectDb()){
+        QMessageBox::warning(this, "Ошибка подключения к базе данных",
+                             "Не удалось подключиться к базе данных.\n"
+                             "Сохранение данных не представляется возможным.");
+    }
+
+    showNotepads();
+    ui->notepadsTreeWidget->setCurrentItem(ui->notepadsTreeWidget->topLevelItem(0));
+}
+
+void Widget::showNotepads()
+{
+    ui->notepadsTreeWidget->clear();
+
+    QVector <Notepad> notepads = dataBase.getNotepads();    //Получаем вектор блокнотов из базы данных
+    for(Notepad& np: notepads){
+        QTreeWidgetItem *item = new QTreeWidgetItem;
+        item->setText(0,np.second);                         //Название блокнота
+        item->setData(0,Qt::UserRole, np.first);            //id блокнота в базе таблице notepads
+        ui->notepadsTreeWidget->addTopLevelItem(item);
+    }
 }
 
 
@@ -291,6 +381,31 @@ void Widget::saveAsNoteSlot()
 
 }
 
+void Widget::changeActivNotepadSlot(QTreeWidgetItem *current, QTreeWidgetItem * prev)
+{
+    if(current == nullptr)
+        return;
+    qDebug() << "change notepad";
+    Notes notes = dataBase.getNotes(current->data(0,Qt::UserRole).toInt());
+    ui->notesListWidget->clear();
+    for(Note& note:notes){
+        QListWidgetItem *item = new QListWidgetItem(note.title);
+        item->setData(Qt::UserRole, note.id);
+        ui->notesListWidget->addItem(item);
+    }
+    ui->notesListWidget->setCurrentRow(0);
+}
+
+void Widget::changeActivNoteSlot(QListWidgetItem *current, QListWidgetItem *prev)
+{
+    if(current == nullptr)
+        return;
+    qDebug() << "change note";
+    Note note = dataBase.getNote(current->data(Qt::UserRole).toInt());
+    editor->setData(note);
+}
+
+
 void Widget::setWindowProperties()
 {
     this->setWindowFlags(windowFlags() | Qt::FramelessWindowHint);
@@ -300,12 +415,31 @@ void Widget::setWindowProperties()
     shadow->setOffset(0);
     ui->mainWidget->setGraphicsEffect(shadow);
 
+    connect(ui->maxWindowButton,   &QPushButton::clicked, this, &Widget::maxButtonSlot);
+    connect(ui->closeWindowButton, &QPushButton::clicked, this, &QWidget::close);
+
+    connect(ui->notepadsTreeWidget, &QTreeWidget::currentItemChanged, this, &Widget::changeActivNotepadSlot);
+    connect(ui->notesListWidget, &QListWidget::currentItemChanged, this, &Widget::changeActivNoteSlot);
+
     this->setMouseTracking(true);
     ui->mainWidget->setMouseTracking(true);
     ui->frame->setMouseTracking(true);
+
+    ui->leftColumnWidget->installEventFilter(this);
+    ui->leftColumnWidget->setMouseTracking(true);
+
+    ui->middleColumnWidget->installEventFilter(this);
+    ui->middleColumnWidget->setMouseTracking(true);
+
+    ui->editorWidget->installEventFilter(this);
+    ui->editorWidget->setMouseTracking(true);
+
+    ui->splitter->setStretchFactor(0,0);                //Левая колонка не должна изменять рамер при изменении размеров окна
+    ui->splitter->setStretchFactor(1,0);                //Центральная колонка не меняет размер при ресайзе окна
+    ui->splitter->setStretchFactor(2,1);                //Колонка с редактором меняет размер при изменении размеров окна
 }
 
-void Widget::setMainMenu()
+void Widget::setupMainMenu()
 {
     QMenuBar* menuBar = new QMenuBar(ui->menuWidget);
 
@@ -346,6 +480,15 @@ void Widget::setMainMenu()
     menuBar->addMenu(menuEdit);
 
 
+}
+
+void Widget::setupEditor()
+{
+    editor = new Editor;
+
+    QBoxLayout* box = new QBoxLayout(QBoxLayout::TopToBottom);
+    ui->editorWidget->setLayout(box);
+    box->addWidget(editor);
 }
 
 

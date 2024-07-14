@@ -71,6 +71,48 @@ bool StyleHelper::setAppTheme(const QString& filePath)
             QJsonObject objBtn = windowButtons.value("close-button").toObject();
             appTheme->closeBtnQSS = getWindowButtonQSS(objBtn,"closeWindowButton");
         }
+    }
+
+    if(root.value("leftColumn").isObject()){
+        QJsonObject leftColumn = root.value("leftColumn").toObject();
+        appTheme->leftColumn += "QWidget{background:" + leftColumn.value("background").toString()+";}"
+                                "QScrollArea{border:none;}";
+        if(leftColumn.value("add-button").isObject()){
+            QJsonObject objBtn = leftColumn.value("add-button").toObject();
+            appTheme->leftColumn += getWindowButtonQSS(objBtn,"leftAddButton");
+        }
+        if(leftColumn.value("add-combobox").isObject()){
+            QJsonObject objCombo = leftColumn.value("add-combobox").toObject();
+            appTheme->leftColumn += "QComboBox{"+jsonToQSS(objCombo) + "}";
+        }
+        if(leftColumn.value("add-combobox-drop-down").isObject()){
+            QJsonObject objCombo = leftColumn.value("add-combobox-drop-down").toObject();
+            appTheme->leftColumn += "QComboBox::drop-down{"+jsonToQSS(objCombo) + "}";
+        }
+        if(leftColumn.value("add-combobox-item-view").isObject()){
+            QJsonObject objCombo = leftColumn.value("add-combobox-item-view").toObject();
+            appTheme->leftColumn += "QComboBox QAbstractItemView{"+jsonToQSS(objCombo) + "}";
+        }
+        if(leftColumn.value("add-combobox-item").isObject()){
+            QJsonObject objCombo = leftColumn.value("add-combobox-item").toObject();
+            appTheme->leftColumn += "QComboBox QAbstractItemView::item{"+jsonToQSS(objCombo) + "}";
+        }
+        if(leftColumn.value("toolbox-page").isObject()){
+            QJsonObject objPage = leftColumn.value("toolbox-page").toObject();
+            appTheme->leftPage += "QWidget{"+jsonToQSS(objPage) + "}";
+        }
+        if(leftColumn.value("toolbox-tab").isObject()){
+            QJsonObject leftTabTitle = leftColumn.value("toolbox-tab").toObject();
+            appTheme->leftTabTitle += "QToolBox::tab{"+jsonToQSS(leftTabTitle) + "}";
+        }
+        if(leftColumn.value("toolbox-tab-selected").isObject()){
+            QJsonObject leftTabSelectedTitle = leftColumn.value("toolbox-tab-selected").toObject();
+            appTheme->leftTabTitle += "QToolBox::tab:selected{"+jsonToQSS(leftTabSelectedTitle) + "}";
+        }
+        appTheme->tabIcon[Tab::NOTEPADS] = leftColumn.value("toolbox-tab-notepads-icon").toString();
+        appTheme->tabIcon[Tab::TASKS] = leftColumn.value("toolbox-tab-tasks-icon").toString();
+        appTheme->tabIcon[Tab::NOTES] = leftColumn.value("toolbox-tab-notes-icon").toString();
+        appTheme->tabHeight = leftColumn.value("toolbox-tab-height").toInt();
 
     }
 
@@ -108,6 +150,21 @@ QString StyleHelper::getCloseButtonStyle()
 {
     return appTheme->closeBtnQSS;
 }
+QString StyleHelper::getLeftColumnStyle()
+{
+    return appTheme->leftColumn;
+}
+
+QString StyleHelper::getLeftPageStyle()
+{
+    return appTheme->leftPage;
+}
+
+QString StyleHelper::getLeftTabTitleStyle()
+{
+    return appTheme->leftTabTitle;
+}
+
 
 QString StyleHelper::getWindowButtonQSS(const QJsonObject& obj, const QString& name)
 {
@@ -122,6 +179,16 @@ QString StyleHelper::getWindowButtonQSS(const QJsonObject& obj, const QString& n
            "}";
 }
 
+QString StyleHelper::getIconPath(Tab::TabIcon type)
+{
+    return appTheme->tabIcon[type];
+}
+
+int StyleHelper::getTabHeight()
+{
+    return appTheme->tabHeight;
+}
+
 QString StyleHelper::jsonToQSS(const QJsonObject &obj)
 {
     QString qss;
@@ -131,3 +198,4 @@ QString StyleHelper::jsonToQSS(const QJsonObject &obj)
     }
     return qss;
 }
+

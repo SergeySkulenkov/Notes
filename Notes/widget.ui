@@ -142,7 +142,7 @@ min-height:25px;</string>
         <property name="childrenCollapsible">
          <bool>false</bool>
         </property>
-        <widget class="QWidget" name="widget" native="true">
+        <widget class="QWidget" name="leftColumnWidget" native="true">
          <property name="minimumSize">
           <size>
            <width>150</width>
@@ -154,21 +154,21 @@ min-height:25px;</string>
          </property>
          <layout class="QVBoxLayout" name="verticalLayout_5">
           <item>
-           <layout class="QHBoxLayout" name="horizontalLayout_4">
+           <layout class="QHBoxLayout" name="leftAddLayout">
             <item>
-             <widget class="QPushButton" name="pushButton">
+             <widget class="QPushButton" name="leftAddButton">
               <property name="styleSheet">
-               <string notr="true">background-color: rgb(229, 229, 229);</string>
+               <string notr="true"/>
               </property>
               <property name="text">
-               <string>+</string>
+               <string/>
               </property>
              </widget>
             </item>
             <item>
-             <widget class="QComboBox" name="comboBox">
+             <widget class="QComboBox" name="addComboBox">
               <property name="styleSheet">
-               <string notr="true">background-color: rgb(223, 223, 223);</string>
+               <string notr="true"/>
               </property>
               <item>
                <property name="text">
@@ -185,16 +185,16 @@ min-height:25px;</string>
            </layout>
           </item>
           <item>
-           <widget class="QScrollArea" name="scrollArea">
+           <widget class="QScrollArea" name="leftColumnScrollArea">
             <property name="widgetResizable">
              <bool>true</bool>
             </property>
-            <widget class="QWidget" name="scrollAreaWidgetContents">
+            <widget class="QWidget" name="LeftScrollAreaWidgetContents">
              <property name="geometry">
               <rect>
                <x>0</x>
                <y>0</y>
-               <width>239</width>
+               <width>246</width>
                <height>597</height>
               </rect>
              </property>
@@ -205,23 +205,38 @@ min-height:25px;</string>
                  <string notr="true">background-color: rgb(175, 175, 175);</string>
                 </property>
                 <property name="currentIndex">
-                 <number>1</number>
+                 <number>0</number>
                 </property>
-                <widget class="QWidget" name="page">
+                <widget class="QWidget" name="notepadsPage">
                  <property name="geometry">
                   <rect>
                    <x>0</x>
                    <y>0</y>
-                   <width>214</width>
+                   <width>228</width>
                    <height>210</height>
                   </rect>
                  </property>
+                 <property name="styleSheet">
+                  <string notr="true"/>
+                 </property>
                  <attribute name="label">
-                  <string>Блокноты</string>
+                  <string>БЛОКНОТЫ</string>
                  </attribute>
                  <layout class="QVBoxLayout" name="verticalLayout_7">
                   <item>
-                   <widget class="QTreeWidget" name="treeWidget">
+                   <widget class="QTreeWidget" name="notepadsTreeWidget">
+                    <property name="sizePolicy">
+                     <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
+                      <horstretch>0</horstretch>
+                      <verstretch>0</verstretch>
+                     </sizepolicy>
+                    </property>
+                    <property name="sizeAdjustPolicy">
+                     <enum>QAbstractScrollArea::AdjustIgnored</enum>
+                    </property>
+                    <attribute name="headerVisible">
+                     <bool>false</bool>
+                    </attribute>
                     <column>
                      <property name="text">
                       <string notr="true">1</string>
@@ -231,17 +246,17 @@ min-height:25px;</string>
                   </item>
                  </layout>
                 </widget>
-                <widget class="QWidget" name="page_2">
+                <widget class="QWidget" name="taskPage">
                  <property name="geometry">
                   <rect>
                    <x>0</x>
                    <y>0</y>
-                   <width>221</width>
+                   <width>228</width>
                    <height>210</height>
                   </rect>
                  </property>
                  <attribute name="label">
-                  <string>Задачи</string>
+                  <string>ЗАДАЧИ</string>
                  </attribute>
                  <layout class="QVBoxLayout" name="verticalLayout_8">
                   <item>
@@ -255,17 +270,17 @@ min-height:25px;</string>
                   </item>
                  </layout>
                 </widget>
-                <widget class="QWidget" name="page_3">
+                <widget class="QWidget" name="notesPage">
                  <property name="geometry">
                   <rect>
                    <x>0</x>
                    <y>0</y>
-                   <width>214</width>
+                   <width>228</width>
                    <height>210</height>
                   </rect>
                  </property>
                  <attribute name="label">
-                  <string>Заметки</string>
+                  <string>ЗАМЕТКИ</string>
                  </attribute>
                  <layout class="QVBoxLayout" name="verticalLayout_9">
                   <item>
@@ -300,7 +315,7 @@ min-height:25px;</string>
           </item>
          </layout>
         </widget>
-        <widget class="QWidget" name="widget_2" native="true">
+        <widget class="QWidget" name="middleColumnWidget" native="true">
          <property name="minimumSize">
           <size>
            <width>150</width>
@@ -340,7 +355,7 @@ min-height:25px;</string>
            </layout>
           </item>
           <item>
-           <widget class="QListWidget" name="listWidget">
+           <widget class="QListWidget" name="notesListWidget">
             <item>
              <property name="text">
               <string>Заметка 1</string>
