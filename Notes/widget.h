@@ -48,13 +48,26 @@ protected:
 private slots:
     void maxButtonSlot();
 
-    void exitSlot();
-    void exportSlot();
+    //Файл
     void openSlot();
-
-    void newNoteSlot();
-    void saveCopyNoteSlot();
-    void saveAsNoteSlot();
+    void exportSlot();
+    void exitSlot();
+    //Заметки
+    void newSlot();
+    void saveCopySlot();
+    void saveAsSlot();
+    void clearSlot();
+    void deleteSlot();
+    //Редактировать
+    void cancelSlot();
+    void undoSlot();
+    void copySlot();
+    void pasteSlot();
+    void cutSlot();
+    void settingsSlot();
+    //О программе
+    void helpSlot();
+    void aboutProgSlot();
 
     void changeActivNotepadSlot(QTreeWidgetItem *current, QTreeWidgetItem *prev);
     void changeActivNoteSlot(QListWidgetItem *current, QListWidgetItem *prev);

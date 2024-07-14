@@ -353,30 +353,82 @@ void Widget::maxButtonSlot()
     }
 }
 
-void Widget::exitSlot()
+//Файл
+void Widget::openSlot()
 {
-    close();
+
 }
 
 void Widget::exportSlot()
 {
 
 }
-void Widget::openSlot()
+
+void Widget::exitSlot()
 {
-    qDebug() << "open slot";
+    close();
+}
+//Заметки
+void Widget::newSlot()
+{
 }
 
-void Widget::newNoteSlot()
+void Widget::saveCopySlot()
 {
 
 }
 
-void Widget::saveCopyNoteSlot()
+void Widget::saveAsSlot()
 {
 
 }
-void Widget::saveAsNoteSlot()
+
+void Widget::clearSlot()
+{
+
+}
+
+void Widget::deleteSlot()
+{
+
+}
+//Редактировать
+void Widget::cancelSlot()
+{
+
+}
+
+void Widget::undoSlot()
+{
+
+}
+
+void Widget::copySlot()
+{
+
+}
+
+void Widget::pasteSlot()
+{
+
+}
+
+void Widget::cutSlot()
+{
+
+}
+
+void Widget::settingsSlot()
+{
+
+}
+//Помощь
+void Widget::helpSlot()
+{
+
+}
+
+void Widget::aboutProgSlot()
 {
 
 }
@@ -443,43 +495,81 @@ void Widget::setupMainMenu()
 {
     QMenuBar* menuBar = new QMenuBar(ui->menuWidget);
 
-    //Файл
     QMenu* menuFile = new QMenu("&Файл");
+
     menuBar->addMenu(menuFile);
 
-    QAction* openAction =   new QAction("&Открыть");
-    QAction* exportAction = new QAction("&Экспорт");
-    QAction* exitAction =   new QAction("&Выход");
+    QAction* openAction = new QAction("Открыть");
+    QAction* exportAction = new QAction("Экспорт");
+    QAction* exitAction = new QAction("Выход");
 
     menuFile->addAction(openAction);
     menuFile->addAction(exportAction);
     menuFile->addAction(exitAction);
 
-    connect(openAction,   &QAction::triggered, this, &Widget::openSlot);
-    connect(exitAction,   &QAction::triggered, this, &Widget::exitSlot);
+    connect(openAction, &QAction::triggered, this, &Widget::openSlot);
     connect(exportAction, &QAction::triggered, this, &Widget::exportSlot);
+    connect(exitAction, &QAction::triggered, this, &Widget::exitSlot);
 
-    //Заметки
     QMenu* menuNotes = new QMenu("&Заметки");
+
     menuBar->addMenu(menuNotes);
 
-    QAction* newNoteAction    = new QAction("&Новая");
-    QAction* copyNoteAction   = new QAction("&Сохранить копию");
-    QAction* saveAsNoteAction = new QAction("Сохранить &как");
+    QAction* newAction = new QAction("Новый");
+    QAction* saveCopyAction = new QAction("Сохранить копию");
+    QAction* saveAsAction = new QAction("Сохранить как");
+    QAction* clearAction = new QAction("Очистить");
+    QAction* deleteAction = new QAction("Удалить");
 
-    menuNotes->addAction(newNoteAction);
-    menuNotes->addAction(copyNoteAction);
-    menuNotes->addAction(saveAsNoteAction);
+    menuNotes->addAction(newAction);
+    menuNotes->addAction(saveCopyAction);
+    menuNotes->addAction(saveAsAction);
+    menuNotes->addAction(clearAction);
+    menuNotes->addAction(saveAsAction);
 
-    connect(newNoteAction,    &QAction::triggered, this, &Widget::newNoteSlot);
-    connect(copyNoteAction,   &QAction::triggered, this, &Widget::saveCopyNoteSlot);
-    connect(saveAsNoteAction, &QAction::triggered, this, &Widget::saveAsNoteSlot);
+    connect(newAction, &QAction::triggered, this, &Widget::newSlot);
+    connect(saveCopyAction, &QAction::triggered, this, &Widget::saveCopySlot);
+    connect(saveAsAction, &QAction::triggered, this, &Widget::saveAsSlot);
+    connect(clearAction, &QAction::triggered, this, &Widget::clearSlot);
+    connect(deleteAction, &QAction::triggered, this, &Widget::deleteSlot);
 
-    //Редактировать
     QMenu* menuEdit = new QMenu("&Редактировать");
+
     menuBar->addMenu(menuEdit);
 
+    QAction* cancelAction = new QAction("Отменить");
+    QAction* undoAction = new QAction("Вернуть");
+    QAction* copyAction = new QAction("Копировать");
+    QAction* pasteAction = new QAction("Вставить");
+    QAction* cutAction = new QAction("Вырезать");
+    QAction* settingsAction = new QAction("Настройки");
 
+    menuEdit->addAction(cancelAction);
+    menuEdit->addAction(undoAction);
+    menuEdit->addAction(copyAction);
+    menuEdit->addAction(pasteAction);
+    menuEdit->addAction(cutAction);
+    menuEdit->addAction(settingsAction);
+
+    connect(cancelAction, &QAction::triggered, this, &Widget::cancelSlot);
+    connect(undoAction, &QAction::triggered, this, &Widget::undoSlot);
+    connect(copyAction, &QAction::triggered, this, &Widget::copySlot);
+    connect(pasteAction, &QAction::triggered, this, &Widget::pasteSlot);
+    connect(cutAction, &QAction::triggered, this, &Widget::cutSlot);
+    connect(settingsAction, &QAction::triggered, this, &Widget::settingsSlot);
+
+    QMenu* menuHelp = new QMenu("&Помощь");
+
+    menuBar->addMenu(menuHelp);
+
+    QAction* helpAction = new QAction("Справка");
+    QAction* aboutProgAction = new QAction("О программе");
+
+    menuHelp->addAction(helpAction);
+    menuHelp->addAction(aboutProgAction);
+
+    connect(helpAction, &QAction::triggered, this, &Widget::helpSlot);
+    connect(aboutProgAction, &QAction::triggered, this, &Widget::aboutProgSlot);
 }
 
 void Widget::setupEditor()
