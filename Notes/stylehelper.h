@@ -30,6 +30,7 @@ public:
     QString getWindowButtonQSS(const QJsonObject& obj, const QString& name);
     QString getIconPath(Tab::TabIcon type);
     int     getTabHeight();
+    QString getTreeWidgetStyle();
     static QSize winIconSize;
     static QSize winBtnSize;
 

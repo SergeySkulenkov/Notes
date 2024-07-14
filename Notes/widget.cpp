@@ -290,23 +290,8 @@ void Widget::setTheme()
     ui->LeftScrollAreaWidgetContents->layout()->setContentsMargins(0,0,0,0);
     ui->addComboBox->view()->setItemDelegate(new QStyledItemDelegate(this));
 
-    ui->notepadsTreeWidget->setStyleSheet("QTreeWidget{"
-                                          "border:none;"
-                                          "font-size:14px;"
-                                          "}"
-                                          "QTreeView::item{"
-                                          "font-size:12px;"
-                                          "color:#aaa;"
-                                          "background:transparent;"
+    ui->notepadsTreeWidget->setStyleSheet(styleHelper->getTreeWidgetStyle());
 
-                                          "}"
-                                          "QTreeView::item:selected{"
-                                          "color:#ddd;"
-                                          "}"
-                                          "QTreeView::item:hover, QTreeView::item:hover{"
-                                          "color:#fff;"
-                                          "}"
-                                        );
     ui->notepadsTreeWidget->viewport()->setFocusPolicy(Qt::NoFocus);
 
 

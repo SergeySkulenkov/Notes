@@ -189,6 +189,26 @@ int StyleHelper::getTabHeight()
     return appTheme->tabHeight;
 }
 
+QString StyleHelper::getTreeWidgetStyle()
+{
+    return "QTreeWidget{"
+           "border:none;"
+           "font-size:14px;"
+           "}"
+           "QTreeView::item{"
+           "font-size:12px;"
+           "color:#aaa;"
+           "background:transparent;"
+
+           "}"
+           "QTreeView::item:selected{"
+           "color:#ddd;"
+           "}"
+           "QTreeView::item:hover, QTreeView::item:hover{"
+           "color:#fff;"
+           "}";
+}
+
 QString StyleHelper::jsonToQSS(const QJsonObject &obj)
 {
     QString qss;
