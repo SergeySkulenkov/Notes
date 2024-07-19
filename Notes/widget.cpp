@@ -19,20 +19,13 @@ Widget::Widget(QWidget *parent)
 {
     ui->setupUi(this);
 
-    setWindowProperties();                  //Меняем свойства окна
-    setupMainMenu();                        //Устанавливаем главное меню
-    styleHelper = new StyleHelper;          //Объект для работы с внешним видом виджетов
-    setTheme();                             //Настраиваем внешний вид виджетов
-    setupEditor();                          //Устанавливаем виджет редактора
-    loadData();                             //Загрузка данных
-    ui->toolBox->setCurrentIndex(0);
-    ui->notepadsTreeWidget->setSizeAdjustPolicy(QAbstractScrollArea::AdjustToContents);
-    ui->notepadsTreeWidget->adjustSize();
-    ui->notepadsPage->adjustSize();
-    qDebug() << ui->notepadsTreeWidget->sizeHint();
-
-
-
+    setWindowProperties();                                  //Меняем свойства окна
+    setupMainMenu();                                        //Устанавливаем главное меню
+    styleHelper = new StyleHelper;                          //Объект для работы с внешним видом виджетов
+    setTheme();                                             //Настраиваем внешний вид виджетов
+    setupEditor();                                          //Устанавливаем виджет редактора
+    loadData();                                             //Загрузка данных
+    ui->toolBox->setCurrentIndex(0);                        //Первый Блокнот должен быть активным по умолчанию
 }
 
 Widget::~Widget()
@@ -44,11 +37,10 @@ void Widget::mousePressEvent(QMouseEvent *event)
 {
     if(event->button()==Qt::LeftButton){
         isRelease = 0;
-        mousePreviousPosition = event->pos();
-        qDebug () << mousePreviousPosition;
-        mouseClickType = checkCollision(event->screenPos());
+        mousePreviousPosition = event->pos();                  //Запоминаем позицию в момент клика ЛКМ
+        mouseClickType = checkCollision(event->screenPos());   //Определяем, где был выполнен клик
         if(!isMaximized())
-            changeCursor();
+            changeCursor();                                     //Меняем указатель мыши
     }
 }
 void Widget::mouseReleaseEvent(QMouseEvent *event)
@@ -56,16 +48,19 @@ void Widget::mouseReleaseEvent(QMouseEvent *event)
     if(event->button()==Qt::LeftButton){
         isRelease = 1;
         mouseClickType = MouseType::None;
-        changeCursor(MouseType::None);
+        changeCursor(MouseType::None);                          //Меняем указатель мыши
     }
 }
 void Widget::mouseMoveEvent(QMouseEvent* event )
 {
     QPointF position = event->screenPos();
-    if(!isMaximized() and isRelease){
+    //Меняем внешний вид указателя, если пользователь не выполнил клик по границе окна
+    if(!isMaximized() && isRelease){
         changeCursor(checkCollision(position));
+        return;
     }
 
+    //Если пользователь пытается изменить границы окна с помощью мыши
     switch (mouseClickType) {
     case MouseType::Top:
         if (!isMaximized()) {
@@ -144,12 +139,15 @@ void Widget::mouseMoveEvent(QMouseEvent* event )
     }
 }
 
+//Развернуть окно по двойному клику
+//Должно быть только виджету "зголовка окна"!
 void Widget::mouseDoubleClickEvent(QMouseEvent* event)
 {
     Q_UNUSED(event);
     maxButtonSlot();
 }
 
+//Вид курсора мыши за пределами "регионов"
 bool Widget::eventFilter(QObject *target, QEvent *event)
 {
     if (target == ui->leftColumnWidget || target == ui->middleColumnWidget || target == ui->editorWidget) {
@@ -161,6 +159,7 @@ bool Widget::eventFilter(QObject *target, QEvent *event)
     return QWidget::eventFilter(target, event);
 }
 
+//Проверка попадания указателя мыши в области на границе окна
 MouseType Widget::checkCollision(const QPointF &mousePos)
 {
     float winX      = this->x();
@@ -201,6 +200,7 @@ MouseType Widget::checkCollision(const QPointF &mousePos)
     }
 }
 
+//Смена внешнего вида указателя мыши
 void Widget::changeCursor()
 {
     changeCursor(mouseClickType);
@@ -243,6 +243,8 @@ void Widget::changeCursor(MouseType type)
     }
 }
 
+//Изменяем внешний вид элементов интерфейса в соответствии с настройками
+//из файла в формате JSON
 void Widget::setTheme()
 {
     styleHelper->setAppTheme("assets/themes/standart.json");
@@ -267,6 +269,8 @@ void Widget::setTheme()
     ui->notepadsPage->setStyleSheet(styleHelper->getLeftPageStyle());
     ui->toolBox->setStyleSheet(styleHelper->getLeftTabTitleStyle());
     ui->toolBox->layout()->setSpacing(0);
+
+    //Назначаем разные иконки разным вкладкам ToolBox
     int tabNum = 0;
     foreach( QWidget* w, ui->toolBox->findChildren<QWidget*>() )
     {
@@ -286,7 +290,7 @@ void Widget::setTheme()
             button->setMinimumHeight(styleHelper->getTabHeight());
         }
     }
-    qDebug() << styleHelper->getLeftTabTitleStyle();
+
     ui->LeftScrollAreaWidgetContents->layout()->setContentsMargins(0,0,0,0);
     ui->addComboBox->view()->setItemDelegate(new QStyledItemDelegate(this));
 
@@ -299,25 +303,35 @@ void Widget::setTheme()
 
 void Widget::loadData()
 {
+
     if(!dataBase.connectDb()){
-        QMessageBox::warning(this, "Ошибка подключения к базе данных",
-                             "Не удалось подключиться к базе данных.\n"
-                             "Сохранение данных не представляется возможным.");
+        //Если соединение с базой данных не установлено предупреждаем об этом пользователя
+        QMessageBox messageBox(QMessageBox::Warning,
+                               "Ошибка подключения к базе данных",
+                               "Не удалось подключиться к базе данных.\n"
+                               "Сохранение данных не представляется возможным.",
+                               QMessageBox::Yes,
+                               this);
+        messageBox.setButtonText(QMessageBox::Yes, "Понятно");          //Меняем текст кнопки
+        messageBox.exec();                                              //Открываем системное окно
+
+        return;
     }
 
-    showNotepads();
-    ui->notepadsTreeWidget->setCurrentItem(ui->notepadsTreeWidget->topLevelItem(0));
+    //Если соединение с базой данных установлено, инициируем получение данных
+    showNotepads();                                                                     //Получаем из базы данных и отображаем Блокноты
+    ui->notepadsTreeWidget->setCurrentItem(ui->notepadsTreeWidget->topLevelItem(0));    //Первый Блокнот должне быть активным по умолчанию
 }
 
 void Widget::showNotepads()
 {
     ui->notepadsTreeWidget->clear();
 
-    QVector <Notepad> notepads = dataBase.getNotepads();    //Получаем вектор блокнотов из базы данных
+    QVector <Notepad> notepads = dataBase.getNotepads();           //Получаем вектор блокнотов из базы данных
     for(Notepad& np: notepads){
         QTreeWidgetItem *item = new QTreeWidgetItem;
-        item->setText(0,np.second);                         //Название блокнота
-        item->setData(0,Qt::UserRole, np.first);            //id блокнота в базе таблице notepads
+        item->setText(0,np.second);                                //Название блокнота
+        item->setData(0,NotesApp::NotepadId, np.first);            //id блокнота в базе таблице notepads
         ui->notepadsTreeWidget->addTopLevelItem(item);
     }
 }
@@ -420,26 +434,28 @@ void Widget::aboutProgSlot()
 
 void Widget::changeActivNotepadSlot(QTreeWidgetItem *current, QTreeWidgetItem * prev)
 {
+    Q_UNUSED(prev);
     if(current == nullptr)
         return;
-    qDebug() << "change notepad";
-    Notes notes = dataBase.getNotes(current->data(0,Qt::UserRole).toInt());
+    Notes notes = dataBase.getNotes(current->data(0,NotesApp::NotepadId).toInt());  //Список заметок из базы данных
+
+    //Построение списка заметок
     ui->notesListWidget->clear();
     for(Note& note:notes){
         QListWidgetItem *item = new QListWidgetItem(note.title);
-        item->setData(Qt::UserRole, note.id);
+        item->setData(NotesApp::NoteId, note.id);
         ui->notesListWidget->addItem(item);
     }
-    ui->notesListWidget->setCurrentRow(0);
+    ui->notesListWidget->setCurrentRow(0);                                      //Активная заметка по умолчанию
 }
 
-void Widget::changeActivNoteSlot(QListWidgetItem *current, QListWidgetItem *prev)
+void Widget::changeActivNoteSlot(QListWidgetItem *current, QListWidgetItem * /*prev*/)
 {
+
     if(current == nullptr)
         return;
-    qDebug() << "change note";
-    Note note = dataBase.getNote(current->data(Qt::UserRole).toInt());
-    editor->setData(note);
+    Note note = dataBase.getNote(current->data(NotesApp::NoteId).toInt());     //Данные одной заметки из базы данных
+    editor->setData(note);                                                     //Загружаем данные в визуальный редактор
 }
 
 
@@ -471,9 +487,13 @@ void Widget::setWindowProperties()
     ui->editorWidget->installEventFilter(this);
     ui->editorWidget->setMouseTracking(true);
 
-    ui->splitter->setStretchFactor(0,0);                //Левая колонка не должна изменять рамер при изменении размеров окна
-    ui->splitter->setStretchFactor(1,0);                //Центральная колонка не меняет размер при ресайзе окна
-    ui->splitter->setStretchFactor(2,1);                //Колонка с редактором меняет размер при изменении размеров окна
+    QList<int> splitSize {200,200,600};
+    ui->splitter->setSizes(splitSize);
+    ui->notepadsTreeWidget->setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
+
+    ui->splitter->setStretchFactor(0,0);
+    ui->splitter->setStretchFactor(1,0);
+    ui->splitter->setStretchFactor(2,1);
 }
 
 void Widget::setupMainMenu()

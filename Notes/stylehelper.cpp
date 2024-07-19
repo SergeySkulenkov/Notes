@@ -110,9 +110,9 @@ bool StyleHelper::setAppTheme(const QString& filePath)
             appTheme->leftTabTitle += "QToolBox::tab:selected{"+jsonToQSS(leftTabSelectedTitle) + "}";
         }
         appTheme->tabIcon[Tab::NOTEPADS] = leftColumn.value("toolbox-tab-notepads-icon").toString();
-        appTheme->tabIcon[Tab::TASKS] = leftColumn.value("toolbox-tab-tasks-icon").toString();
-        appTheme->tabIcon[Tab::NOTES] = leftColumn.value("toolbox-tab-notes-icon").toString();
-        appTheme->tabHeight = leftColumn.value("toolbox-tab-height").toInt();
+        appTheme->tabIcon[Tab::TASKS]    = leftColumn.value("toolbox-tab-tasks-icon").toString();
+        appTheme->tabIcon[Tab::NOTES]    = leftColumn.value("toolbox-tab-notes-icon").toString();
+        appTheme->tabHeight              = leftColumn.value("toolbox-tab-height").toInt();
 
     }
 

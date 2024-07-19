@@ -5,6 +5,7 @@ static int localeCompare( void* /*arg*/, int len1, const void* data1,  int len2,
     QString string2 = QString::fromUtf8((char*)data2,len2).toUpper();
     return QString::localeAwareCompare( string1, string2 );
 }
+
 static void upper(sqlite3_context *context,  int argc, sqlite3_value **argv){
     if( argc != 1 ) return;
     switch(sqlite3_value_type(argv[0]))
@@ -73,7 +74,6 @@ Notes DataBase::getNotes(int notepadId)
         qDebug() << "Не удалось выполнить запрос к базе данных " << sql;
         return vector;
     }
-
     while(sqlite3_step(stmt) == SQLITE_ROW )
     {
         Note note;
@@ -136,55 +136,59 @@ bool DataBase::restoreDb()
     if(!openDb())
         return false;
     QString date = QDateTime::currentDateTime().toString("yyyy-MM-dd hh:mm:ss");
-    // QString sql[] = {"CREATE TABLE notepads ("
-    //                  "id         INTEGER PRIMARY KEY AUTOINCREMENT,"
-    //                  "name       TEXT NOT NULL COLLATE NOCASECOLLATE"
-    //                  ");",
-    //                  "CREATE TABLE notes ("
-    //                  "id         INTEGER PRIMARY KEY AUTOINCREMENT,"
-    //                  "notepad_id INTEGER NOT NULL,"
-    //                  "title       TEXT NOT NULL COLLATE NOCASECOLLATE,"
-    //                  "content     TEXT NOT NULL,"
-    //                  "keywords    TEXT NOT NULL COLLATE NOCASECOLLATE,"
-    //                  "date_create TEXT NOT NULL,"
-    //                  "date_update TEXT,"
-    //                  "status      INTEGER NOT NULL,"
-    //                  "checked     INTEGER"
-    //                  ");",
-    //                  "INSERT INTO notepads (name) "
-    //                  "VALUES ('Первый блокнот');",
-    //                          "INSERT INTO notes (notepad_id, title, content, keywords, date_create, status) "
-    //                  "VALUES ((SELECT MAX(id) FROM notepads),'Первая заметка','<p>Привет, Мир!</p>', ',старт,','"+date+"',1);",
-    //                  "INSERT INTO notes (notepad_id, title, content, keywords, date_create, status) "
-    //                  "VALUES ((SELECT MAX(id) FROM notepads),'Вторая заметка','<p>Текст второй заметки.</p>', ',вторая, начало', '"+date+"',1);"
-    //                  };
-    QString sql[] = {
-        "CREATE TABLE notepads ("
-        "id         INTEGER PRIMARY KEY AUTOINCREMENT,"
-        "name       TEXT NOT NULL"
-        ");",
-        "CREATE TABLE notes ("
-        "id         INTEGER PRIMARY KEY AUTOINCREMENT,"
-        "notepad_id INTEGER NOT NULL,"
-        "title       TEXT NOT NULL,"
-        "content     TEXT NOT NULL,"
-        "keywords    TEXT NOT NULL,"
-        "date_create TEXT NOT NULL,"
-        "date_update TEXT,"
-        "status      INTEGER NOT NULL,"
-        "checked     INTEGER"
-        ");",
-        "INSERT INTO notepads (name) "
-        "VALUES ('Первый блокнот');",
-        "INSERT INTO notes (notepad_id, title, content, keywords, date_create, status) "
-        "VALUES ((SELECT MAX(id) FROM notepads),'Первая заметка','<p>Привет, Мир!</p>', ',старт,','"+date+"',1);",
-        "INSERT INTO notes (notepad_id, title, content, keywords, date_create, status) "
-        "VALUES ((SELECT MAX(id) FROM notepads),'Вторая заметка','<p>Текст второй заметки.</p>', ',вторая, начало','"+date+"',1);",
-        "INSERT INTO notepads (name) "
-        "VALUES ('Ещё один блокнот');",
-        "INSERT INTO notes (notepad_id, title, content, keywords, date_create, status) "
-        "VALUES ((SELECT MAX(id) FROM notepads),'Заметка из второго блокнота','<p>Текст заметки (второй блокнот).</p>', ',вторая, начало','"+date+"',1);"
-    };
+    QString sql[] = {"CREATE TABLE notepads ("
+                     "id         INTEGER PRIMARY KEY AUTOINCREMENT,"
+                     "name       TEXT NOT NULL COLLATE NOCASECOLLATE"
+                     ");",
+                     "CREATE TABLE notes ("
+                     "id         INTEGER PRIMARY KEY AUTOINCREMENT,"
+                     "notepad_id INTEGER NOT NULL,"
+                     "title       TEXT NOT NULL COLLATE NOCASECOLLATE,"
+                     "content     TEXT NOT NULL COLLATE NOCASECOLLATE,"
+                     "keywords    TEXT NOT NULL COLLATE NOCASECOLLATE,"
+                     "date_create TEXT NOT NULL,"
+                     "date_update TEXT,"
+                     "status      INTEGER NOT NULL,"
+                     "checked     INTEGER"
+                     ");",
+                     "INSERT INTO notepads (name) "
+                     "VALUES ('Первый блокнот');",
+                             "INSERT INTO notes (notepad_id, title, content, keywords, date_create, status) "
+                     "VALUES ((SELECT MAX(id) FROM notepads),'Первая заметка','<p>Привет, Мир!</p>', ',старт,','"+date+"',1);",
+                     "INSERT INTO notes (notepad_id, title, content, keywords, date_create, status) "
+                     "VALUES ((SELECT MAX(id) FROM notepads),'Вторая заметка','<p>Текст второй заметки.</p>', ',вторая, начало', '"+date+"',1);",
+                    "INSERT INTO notepads (name) "
+                    "VALUES ('Ещё один блокнот');",
+                    "INSERT INTO notes (notepad_id, title, content, keywords, date_create, status) "
+                    "VALUES ((SELECT MAX(id) FROM notepads),'Заметка из второго блокнота','<p>Текст заметки (второй блокнот).</p>', ',вторая, начало','"+date+"',1);"
+                     };
+    // QString sql[] = {
+    //     "CREATE TABLE notepads ("
+    //     "id         INTEGER PRIMARY KEY AUTOINCREMENT,"
+    //     "name       TEXT NOT NULL"
+    //     ");",
+    //     "CREATE TABLE notes ("
+    //     "id         INTEGER PRIMARY KEY AUTOINCREMENT,"
+    //     "notepad_id INTEGER NOT NULL,"
+    //     "title       TEXT NOT NULL,"
+    //     "content     TEXT NOT NULL,"
+    //     "keywords    TEXT NOT NULL,"
+    //     "date_create TEXT NOT NULL,"
+    //     "date_update TEXT,"
+    //     "status      INTEGER NOT NULL,"
+    //     "checked     INTEGER"
+    //     ");",
+    //     "INSERT INTO notepads (name) "
+    //     "VALUES ('Первый блокнот');",
+    //     "INSERT INTO notes (notepad_id, title, content, keywords, date_create, status) "
+    //     "VALUES ((SELECT MAX(id) FROM notepads),'Первая заметка','<p>Привет, Мир!</p>', ',старт,','"+date+"',1);",
+    //     "INSERT INTO notes (notepad_id, title, content, keywords, date_create, status) "
+    //     "VALUES ((SELECT MAX(id) FROM notepads),'Вторая заметка','<p>Текст второй заметки.</p>', ',вторая, начало','"+date+"',1);",
+    //     "INSERT INTO notepads (name) "
+    //     "VALUES ('Ещё один блокнот');",
+    //     "INSERT INTO notes (notepad_id, title, content, keywords, date_create, status) "
+    //     "VALUES ((SELECT MAX(id) FROM notepads),'Заметка из второго блокнота','<p>Текст заметки (второй блокнот).</p>', ',вторая, начало','"+date+"',1);"
+    // };
 
     char *zErrMsg = 0;
     for(QString& query: sql){

@@ -6,7 +6,7 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>1037</width>
+    <width>1224</width>
     <height>694</height>
    </rect>
   </property>
@@ -143,10 +143,22 @@ min-height:25px;</string>
          <bool>false</bool>
         </property>
         <widget class="QWidget" name="leftColumnWidget" native="true">
+         <property name="sizePolicy">
+          <sizepolicy hsizetype="Expanding" vsizetype="Preferred">
+           <horstretch>0</horstretch>
+           <verstretch>0</verstretch>
+          </sizepolicy>
+         </property>
          <property name="minimumSize">
           <size>
-           <width>150</width>
+           <width>0</width>
            <height>0</height>
+          </size>
+         </property>
+         <property name="maximumSize">
+          <size>
+           <width>16777215</width>
+           <height>16777215</height>
           </size>
          </property>
          <property name="styleSheet">
@@ -194,13 +206,31 @@ min-height:25px;</string>
               <rect>
                <x>0</x>
                <y>0</y>
-               <width>246</width>
+               <width>295</width>
                <height>597</height>
               </rect>
              </property>
              <layout class="QVBoxLayout" name="verticalLayout_6">
               <item>
                <widget class="QToolBox" name="toolBox">
+                <property name="sizePolicy">
+                 <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
+                  <horstretch>0</horstretch>
+                  <verstretch>0</verstretch>
+                 </sizepolicy>
+                </property>
+                <property name="minimumSize">
+                 <size>
+                  <width>0</width>
+                  <height>0</height>
+                 </size>
+                </property>
+                <property name="maximumSize">
+                 <size>
+                  <width>16777215</width>
+                  <height>16777215</height>
+                 </size>
+                </property>
                 <property name="styleSheet">
                  <string notr="true">background-color: rgb(175, 175, 175);</string>
                 </property>
@@ -212,7 +242,7 @@ min-height:25px;</string>
                   <rect>
                    <x>0</x>
                    <y>0</y>
-                   <width>228</width>
+                   <width>277</width>
                    <height>210</height>
                   </rect>
                  </property>
@@ -230,6 +260,9 @@ min-height:25px;</string>
                       <horstretch>0</horstretch>
                       <verstretch>0</verstretch>
                      </sizepolicy>
+                    </property>
+                    <property name="horizontalScrollBarPolicy">
+                     <enum>Qt::ScrollBarAsNeeded</enum>
                     </property>
                     <property name="sizeAdjustPolicy">
                      <enum>QAbstractScrollArea::AdjustIgnored</enum>
@@ -251,7 +284,7 @@ min-height:25px;</string>
                   <rect>
                    <x>0</x>
                    <y>0</y>
-                   <width>228</width>
+                   <width>277</width>
                    <height>210</height>
                   </rect>
                  </property>
@@ -275,7 +308,7 @@ min-height:25px;</string>
                   <rect>
                    <x>0</x>
                    <y>0</y>
-                   <width>228</width>
+                   <width>277</width>
                    <height>210</height>
                   </rect>
                  </property>
@@ -318,7 +351,7 @@ min-height:25px;</string>
         <widget class="QWidget" name="middleColumnWidget" native="true">
          <property name="minimumSize">
           <size>
-           <width>150</width>
+           <width>0</width>
            <height>0</height>
           </size>
          </property>
@@ -391,7 +424,7 @@ min-height:25px;</string>
             <property name="minimumSize">
              <size>
               <width>150</width>
-              <height>40</height>
+              <height>0</height>
              </size>
             </property>
             <property name="styleSheet">
@@ -453,7 +486,7 @@ min-height:25px;</string>
            <widget class="QWidget" name="editorWidget" native="true">
             <property name="minimumSize">
              <size>
-              <width>150</width>
+              <width>0</width>
               <height>0</height>
              </size>
             </property>

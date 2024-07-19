@@ -10,13 +10,17 @@ namespace Ui {
 class Widget;
 }
 class QMouseEvent;
-class StyleHelper;
-class Editor;
 class QTreeWidgetItem;
 class QListWidgetItem;
 
 QT_END_NAMESPACE
 
+class StyleHelper;
+class Editor;
+
+//Тип клика мыши. Используется для реализации возможности
+//изменение размеров окна с помощью мыши.
+//Соответствует региону, в котором был выполнен клик.
 enum class MouseType{
     None,
     Top,
@@ -29,6 +33,14 @@ enum class MouseType{
     BottomRight,
     MainTop
 };
+
+//Пользовательские роди для хранения ID из базы данных
+namespace NotesApp{
+enum UsersData{
+    NotepadId = Qt::UserRole + 1,    //id блокнота
+    NoteId                           //id заметки
+};
+}
 
 class Widget : public QWidget
 {
@@ -46,52 +58,51 @@ protected:
     bool eventFilter(QObject *target, QEvent *event) ;
 
 private slots:
-    void maxButtonSlot();
 
-    //Файл
-    void openSlot();
-    void exportSlot();
-    void exitSlot();
-    //Заметки
-    void newSlot();
-    void saveCopySlot();
-    void saveAsSlot();
-    void clearSlot();
-    void deleteSlot();
-    //Редактировать
-    void cancelSlot();
-    void undoSlot();
-    void copySlot();
-    void pasteSlot();
-    void cutSlot();
-    void settingsSlot();
-    //О программе
-    void helpSlot();
-    void aboutProgSlot();
+    void maxButtonSlot();           //Окно на весь экран
 
-    void changeActivNotepadSlot(QTreeWidgetItem *current, QTreeWidgetItem *prev);
-    void changeActivNoteSlot(QListWidgetItem *current, QListWidgetItem *prev);
+    void openSlot();                //Выбор файла базы данных
+    void exportSlot();              //Экспорт файла
+    void exitSlot();                //Выход
 
+    void newSlot();                 //Новая заметка
+    void saveCopySlot();            //Сохранить копию
+    void saveAsSlot();              //Сохранить как
+    void clearSlot();               //Очистить содержимое заметки
+    void deleteSlot();              //Удалить заметку
+
+    void cancelSlot();              //Отменить действие
+    void undoSlot();                //Вернуть (отменить отменённое действие)
+    void copySlot();                //Копировать
+    void pasteSlot();               //Вставить
+    void cutSlot();                 //Вырезать
+    void settingsSlot();            //Настройки
+
+    void helpSlot();                //Справка
+    void aboutProgSlot();           //О программе
+
+    void changeActivNotepadSlot(QTreeWidgetItem *current, QTreeWidgetItem *prev);   //Смена активного блокнота
+    void changeActivNoteSlot(QListWidgetItem *current, QListWidgetItem *prev);      //Смена активной заметки
 
 private:
     Ui::Widget*  ui;
-    MouseType    mouseClickType;
-    QPoint       mousePreviousPosition;
-    StyleHelper* styleHelper;
-    Editor*      editor;
-    bool isRelease = 1;
+    MouseType    mouseClickType;                            //Тик клика мыши в зависимости от её положения
+    QPoint       mousePreviousPosition;                     //Предыдущая позиция указателя мыши
+    StyleHelper* styleHelper;                               //Класс для работы с внешним видом виджетов
+    Editor*      editor;                                    //Виджет визуального редактора
+    bool isRelease = 1;                                     //Флаг "отпускания" левой кнопки мыши
 
-    void setWindowProperties();
-    void setupMainMenu();
-    void setupEditor();
-    MouseType checkCollision(const QPointF& mousePos);
-    void changeCursor();
+    void setWindowProperties();                             //Изменение внешнего вида окна
+    void setupMainMenu();                                   //Установка главного меню
+    void setupEditor();                                     //Установка виджета визуального редактора
+    MouseType checkCollision(const QPointF& mousePos);      //Проверка местоположения указателя мыши
+    void changeCursor();                                    //Смена внешнего вида указателя мыши
     void changeCursor(MouseType type);
-    void setTheme();
+    void setTheme();                                        //Изменение внешнего вида элементов интерфейса
 
-    void loadData();
-    DataBase dataBase;
-    void showNotepads();
+    void loadData();                                        //Загрузка данных из базы данных
+    DataBase dataBase;                                      //Объект для взаимодействия с базой данных
+    void showNotepads();                                    //Отображение данных о блокнотах
 
 };
 #endif // WIDGET_H

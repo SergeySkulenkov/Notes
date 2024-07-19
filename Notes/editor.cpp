@@ -17,7 +17,9 @@ Editor::~Editor()
 
 void Editor::setData(const Note& note)
 {
+    textBrowser->setText(note.content);
     textEditor->setText(note.content);
+    codeEditor->setPlainText(textEditor->toHtml());
     ui->titleLabel->setText(note.title);
     if(note.dateUpdate.isValid()){
         ui->dateLabel->setText(note.dateUpdate.toString("dd.MM.yyyy"));
@@ -74,7 +76,4 @@ void Editor::setupEditors()
     ui->stackedWidget->addWidget(codeEditor);
     ui->stackedWidget->setCurrentWidget(textEditor);
 
-    textEditor->setPlainText("Текстовый редактор");
-    textBrowser->setText("<p>Просмотр</p>");
-    codeEditor->setPlainText("Редактор кода");
 }

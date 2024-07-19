@@ -10,19 +10,20 @@
 
 
 struct Note{
-    int         id;                 //id заметки
-    int         notepad_id;         //id блокнота
-    QString     title;              //Заголовок
-    QString     content;            //Текст
-    QString     keywords;            //Ключевые слова
-    QDateTime   dateCreate;         //Дата создания
-    QDateTime   dateUpdate;         //Дата изменения
-    int         status;             //Статус (заметка, задача)
-    bool        checked;            //Выполнена да/нет (для задач)
+    int         id;                     //id заметки
+    int         notepad_id;             //id блокнота
+    QString     title;                  //Заголовок
+    QString     content;                //Текст
+    QString     keywords;               //Ключевые слова
+    QDateTime   dateCreate;             //Дата создания
+    QDateTime   dateUpdate;             //Дата изменения
+    int         status;                 //Статус (заметка, задача)
+    bool        checked;                //Выполнена да/нет (для задач)
 };
 
-using Notepad = QPair<int, QString>;
-using Notes   = QVector<Note>;
+//Пользовательские типы данных
+using Notepad = QPair<int, QString>;    //Блокнот QPair <id_блокнота, название_блокнота>
+using Notes   = QVector<Note>;          //Вектор заметок
 
 class DataBase:public QObject
 {

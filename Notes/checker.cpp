@@ -65,6 +65,7 @@ BodyTextEdit::BodyTextEdit(QWidget* parent )
     this->setContextMenuPolicy(Qt::CustomContextMenu);
     m_highLighter = new SpellingHighlighter(this);
     connect(this, SIGNAL(customContextMenuRequested(QPoint)), this, SLOT(openCustomMenu(QPoint)));
+    this->setStyleSheet("QMenu::item{color:#333;}QMenu::item::selected{background-color:#ddd;}");
 }
 
 //Создание контекстного меню с предложенными вариантами замены
