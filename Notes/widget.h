@@ -103,6 +103,9 @@ private:
     void loadData();                                        //Загрузка данных из базы данных
     DataBase dataBase;                                      //Объект для взаимодействия с базой данных
     void showNotepads();                                    //Отображение данных о блокнотах
+    void showNotes();
+    void showTasks();
 
 };
+
 #endif // WIDGET_H

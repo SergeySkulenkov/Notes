@@ -21,6 +21,12 @@ public:
     explicit Editor(QWidget *parent = nullptr);
     ~Editor();
     void setData(const Note& note);
+    void setSaveButtonIcon(const QString& path);
+    void setBoldButtonIcon(const QString& path);
+    void setItalicButtonIcon(const QString& path);
+    void setUnderlineButtonIcon(const QString& path);
+    void setStrikethroughButtonIcon(const QString& path);
+    void setTagsIcon(const QString& path);
 
 private slots:
     void testEditor();
@@ -32,6 +38,7 @@ private:
     QTextBrowser*    textBrowser;
     CodeEditor*      codeEditor;
     HtmlHighLighter* highlighter;
+
 
     void setupEditors();
 };

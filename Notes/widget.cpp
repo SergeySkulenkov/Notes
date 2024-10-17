@@ -22,8 +22,9 @@ Widget::Widget(QWidget *parent)
     setWindowProperties();                                  //Меняем свойства окна
     setupMainMenu();                                        //Устанавливаем главное меню
     styleHelper = new StyleHelper;                          //Объект для работы с внешним видом виджетов
-    setTheme();                                             //Настраиваем внешний вид виджетов
     setupEditor();                                          //Устанавливаем виджет редактора
+    setTheme();                                             //Настраиваем внешний вид виджетов
+
     loadData();                                             //Загрузка данных
     ui->toolBox->setCurrentIndex(0);                        //Первый Блокнот должен быть активным по умолчанию
 }
@@ -298,7 +299,17 @@ void Widget::setTheme()
 
     ui->notepadsTreeWidget->viewport()->setFocusPolicy(Qt::NoFocus);
 
+    qDebug() << styleHelper->getEditorStyle();
+    editor->setStyleSheet(styleHelper->getEditorStyle());
+    editor->setSaveButtonIcon(styleHelper->getEditorButtonIconPath(EditorStyle::SAVE_BTN));
+    editor->setBoldButtonIcon(styleHelper->getEditorButtonIconPath(EditorStyle::BOLD_BTN));
+    editor->setItalicButtonIcon(styleHelper->getEditorButtonIconPath(EditorStyle::ITALIC_BTN));
+    editor->setUnderlineButtonIcon(styleHelper->getEditorButtonIconPath(EditorStyle::UNDERLINE_BTN));
+    editor->setStrikethroughButtonIcon(styleHelper->getEditorButtonIconPath(EditorStyle::STRIKETHROUGH_BTN));
+    editor->setTagsIcon(styleHelper->getEditorButtonIconPath(EditorStyle::TAGS_ICO));
 
+    ui->prevButton->setIcon(QIcon(styleHelper->getEditorButtonIconPath(EditorStyle::PREV_BTN)));
+    ui->nextButton->setIcon(QIcon(styleHelper->getEditorButtonIconPath(EditorStyle::NEXT_BTN)));
 }
 
 void Widget::loadData()
@@ -321,6 +332,8 @@ void Widget::loadData()
     //Если соединение с базой данных установлено, инициируем получение данных
     showNotepads();                                                                     //Получаем из базы данных и отображаем Блокноты
     ui->notepadsTreeWidget->setCurrentItem(ui->notepadsTreeWidget->topLevelItem(0));    //Первый Блокнот должне быть активным по умолчанию
+    showNotes();
+    showTasks();
 }
 
 void Widget::showNotepads()
@@ -333,6 +346,30 @@ void Widget::showNotepads()
         item->setText(0,np.second);                                //Название блокнота
         item->setData(0,NotesApp::NotepadId, np.first);            //id блокнота в базе таблице notepads
         ui->notepadsTreeWidget->addTopLevelItem(item);
+    }
+}
+
+void Widget::showNotes()
+{
+    ui->leftColumnNotesListWidget->clear();
+
+    Notes notes = dataBase.getAllNotes();
+    for(Note& note:notes){
+        QListWidgetItem *item = new QListWidgetItem(note.title);
+        item->setData(NotesApp::NoteId, note.id);
+        ui->leftColumnNotesListWidget->addItem(item);
+    }
+}
+
+void Widget::showTasks()
+{
+    ui->leftColumnTasksListWidget->clear();
+
+    Notes notes = dataBase.getAllTasks();
+    for(Note& note:notes){
+        QListWidgetItem *item = new QListWidgetItem(note.title);
+        item->setData(NotesApp::NoteId, note.id);
+        ui->leftColumnTasksListWidget->addItem(item);
     }
 }
 
@@ -584,6 +621,7 @@ void Widget::setupEditor()
     QBoxLayout* box = new QBoxLayout(QBoxLayout::TopToBottom);
     ui->editorWidget->setLayout(box);
     box->addWidget(editor);
+    box->setMargin(0);
 }
 
 

@@ -17,16 +17,24 @@ Editor::~Editor()
 
 void Editor::setData(const Note& note)
 {
+    QString months[] = {"января",  "февраля", "марта",
+                        "апреля",  "мая",     "июня",
+                        "июля",    "августа", "сентября",
+                        "октября", "ноября",  "декабря"
+    };
     textBrowser->setText(note.content);
     textEditor->setText(note.content);
     codeEditor->setPlainText(textEditor->toHtml());
     ui->titleLabel->setText(note.title);
+
     if(note.dateUpdate.isValid()){
-        ui->dateLabel->setText(note.dateUpdate.toString("dd.MM.yyyy"));
-        ui->dateLabel->setToolTip("Дата создания: " + note.dateCreate.toString("dd.MM.yyyy hh:mm:ss")
+        int index = note.dateUpdate.date().month()-1;
+        ui->dateLabel->setText(note.dateUpdate.toString("d "+months[index]+" yyyy"));
+        ui->dateLabel->setToolTip("Дата создания: " + note.dateCreate.toString("d.MM.yyyy hh:mm:ss")
                                   +"\nДата изменения: " + note.dateUpdate.toString("dd.MM.yyyy hh:mm:ss") );
     }else{
-        ui->dateLabel->setText(note.dateCreate.toString("dd.MM.yyyy"));
+        int index = note.dateCreate.date().month()-1;
+        ui->dateLabel->setText(note.dateCreate.toString("dd "+months[index]+" yyyy"));
         ui->dateLabel->setToolTip("Дата создания: " + note.dateCreate.toString("dd.MM.yyyy hh:mm:ss"));
     }
     if(note.keywords.length() > 0){
@@ -39,6 +47,35 @@ void Editor::setData(const Note& note)
     }
 
 }
+
+void Editor::setSaveButtonIcon(const QString& path)
+{
+    ui->saveButton->setIcon(QIcon(path));
+}
+
+void Editor::setBoldButtonIcon(const QString &path)
+{
+    ui->boldButton->setIcon(QIcon(path));
+}
+void Editor::setItalicButtonIcon(const QString &path)
+{
+    ui->italicButton->setIcon(QIcon(path));
+}
+void Editor::setUnderlineButtonIcon(const QString &path)
+{
+    ui->underlineButton->setIcon(QIcon(path));
+}
+void Editor::setStrikethroughButtonIcon(const QString &path)
+{
+    ui->strikeButton->setIcon(QIcon(path));
+}
+
+void Editor::setTagsIcon(const QString &path)
+{
+    ui->tagsLabel->setPixmap(QPixmap(path));
+
+}
+
 
 void Editor::testEditor()
 {
@@ -75,5 +112,9 @@ void Editor::setupEditors()
     ui->stackedWidget->addWidget(textBrowser);
     ui->stackedWidget->addWidget(codeEditor);
     ui->stackedWidget->setCurrentWidget(textEditor);
+
+    textEditor->setStyleSheet("QFrame{border:none; font-size:12px;}");
+    textBrowser->setStyleSheet("QFrame{border:none; font-size:12px;}");
+    codeEditor->setStyleSheet("QFrame{border:none; font-size:12px;}");
 
 }

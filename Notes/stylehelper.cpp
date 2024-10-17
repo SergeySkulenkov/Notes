@@ -115,6 +115,45 @@ bool StyleHelper::setAppTheme(const QString& filePath)
         appTheme->tabHeight              = leftColumn.value("toolbox-tab-height").toInt();
 
     }
+    if(root.value("editor").isObject()){
+        QJsonObject jObj;
+        if(root.value("editor").toObject().value("title").isObject()){
+            jObj = root.value("editor").toObject().value("title").toObject();
+            appTheme->editorQSS += "QLineEdit#titleLabel{"+jsonToQSS(jObj) + "} ";
+        }
+        if(root.value("editor").toObject().value("title-focus").isObject()){
+            jObj = root.value("editor").toObject().value("title-focus").toObject();
+            appTheme->editorQSS += "QLineEdit#titleLabel::focus{"+jsonToQSS(jObj) + "} ";
+        }
+        if(root.value("editor").toObject().value("buttons-bar").isObject()){
+            jObj = root.value("editor").toObject().value("buttons-bar").toObject();
+            appTheme->editorQSS += "QWidget#buttonsBarWidget{"+jsonToQSS(jObj) + "} ";
+        }
+        if(root.value("editor").toObject().value("tags").isObject()){
+            jObj = root.value("editor").toObject().value("tags").toObject();
+            appTheme->editorQSS += "QLineEdit#keywordsEdit{"+jsonToQSS(jObj) + "} ";
+        }
+        if(root.value("editor").toObject().value("buttons").isObject()){
+            jObj = root.value("editor").toObject().value("buttons").toObject();
+            if(jObj.value("normal-button").isObject()){
+                QJsonObject objBtn = jObj.value("normal-button").toObject();
+                appTheme->editorQSS += "QWidget#buttonsBarWidget QPushButton{"+jsonToQSS(objBtn) + "}";
+            }
+            if(jObj.value("hover-button").isObject()){
+                QJsonObject objBtn = jObj.value("hover-button").toObject();
+                appTheme->editorQSS += "QWidget#buttonsBarWidget QPushButton:hover{"+jsonToQSS(objBtn) + "}";
+            }
+            appTheme->editorButtonIcon[EditorStyle::SAVE_BTN] = jObj.value("save-button-icon").toString();
+            appTheme->editorButtonIcon[EditorStyle::BOLD_BTN] = jObj.value("bold-button-icon").toString();
+            appTheme->editorButtonIcon[EditorStyle::ITALIC_BTN] = jObj.value("italic-button-icon").toString();
+            appTheme->editorButtonIcon[EditorStyle::UNDERLINE_BTN] = jObj.value("underline-button-icon").toString();
+            appTheme->editorButtonIcon[EditorStyle::STRIKETHROUGH_BTN] = jObj.value("strikethrough-button-icon").toString();
+            appTheme->editorButtonIcon[EditorStyle::TAGS_ICO] = jObj.value("tags-icon").toString();
+            appTheme->editorButtonIcon[EditorStyle::PREV_BTN] = jObj.value("prev-button-icon").toString();
+            appTheme->editorButtonIcon[EditorStyle::NEXT_BTN] = jObj.value("next-button-icon").toString();
+        }
+
+    }
 
 
 
@@ -182,6 +221,16 @@ QString StyleHelper::getWindowButtonQSS(const QJsonObject& obj, const QString& n
 QString StyleHelper::getIconPath(Tab::TabIcon type)
 {
     return appTheme->tabIcon[type];
+}
+
+QString StyleHelper::getEditorStyle()
+{
+    return appTheme->editorQSS;
+}
+
+QString StyleHelper::getEditorButtonIconPath(EditorStyle::Buttons type)
+{
+    return appTheme->editorButtonIcon[type];
 }
 
 int StyleHelper::getTabHeight()

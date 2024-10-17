@@ -88,6 +88,57 @@ Notes DataBase::getNotes(int notepadId)
     return vector;
 }
 
+Notes DataBase::getAllNotes()
+{
+    Notes vector;
+    QString sql = "SELECT id, title, date_create, date_update "
+                  "FROM notes WHERE status=1 ORDER BY date_update DESC, title ASC";
+    sqlite3_stmt *stmt;
+    int rc = sqlite3_prepare_v2(db, sql.toStdString().c_str() ,-1, &stmt, NULL);
+    if( rc != SQLITE_OK ){
+        qDebug() << "Не удалось выполнить запрос к базе данных " << sql;
+        qDebug() << "Текст сообщения об ошибке: " << sqlite3_errmsg(db);
+        return vector;
+    }
+    while(sqlite3_step(stmt) == SQLITE_ROW )
+    {
+        Note note;
+        note.id = sqlite3_column_int(stmt,0);
+        note.title = reinterpret_cast<const char*> (sqlite3_column_text(stmt,1));
+        note.dateCreate = QDateTime::fromString( reinterpret_cast<const char*> (sqlite3_column_text(stmt,2)),"yyyy-MM-dd hh:mm:ss");
+        note.dateUpdate = QDateTime::fromString( reinterpret_cast<const char*> (sqlite3_column_text(stmt,3)),"yyyy-MM-dd hh:mm:ss");
+        note.status = 1;
+        vector.append(note);
+    }
+    return vector;
+}
+
+Notes DataBase::getAllTasks()
+{
+    Notes vector;
+    QString sql = "SELECT id, title, date_create, date_update, checked "
+                  "FROM notes WHERE status=2 ORDER BY date_update DESC, title ASC";
+    sqlite3_stmt *stmt;
+    int rc = sqlite3_prepare_v2(db, sql.toStdString().c_str() ,-1, &stmt, NULL);
+    if( rc != SQLITE_OK ){
+        qDebug() << "Не удалось выполнить запрос к базе данных " << sql;
+        qDebug() << "Текст сообщения об ошибке: " << sqlite3_errmsg(db);
+        return vector;
+    }
+    while(sqlite3_step(stmt) == SQLITE_ROW )
+    {
+        Note note;
+        note.id = sqlite3_column_int(stmt,0);
+        note.title = reinterpret_cast<const char*> (sqlite3_column_text(stmt,1));
+        note.dateCreate = QDateTime::fromString( reinterpret_cast<const char*> (sqlite3_column_text(stmt,2)),"yyyy-MM-dd hh:mm:ss");
+        note.dateUpdate = QDateTime::fromString( reinterpret_cast<const char*> (sqlite3_column_text(stmt,3)),"yyyy-MM-dd hh:mm:ss");
+        note.status = 2;
+        note.checked = sqlite3_column_int(stmt,4);
+        vector.append(note);
+    }
+    return vector;
+}
+
 Note DataBase::getNote(int noteId)
 {
     Note note;
@@ -153,42 +204,16 @@ bool DataBase::restoreDb()
                      ");",
                      "INSERT INTO notepads (name) "
                      "VALUES ('Первый блокнот');",
-                             "INSERT INTO notes (notepad_id, title, content, keywords, date_create, status) "
-                     "VALUES ((SELECT MAX(id) FROM notepads),'Первая заметка','<p>Привет, Мир!</p>', ',старт,','"+date+"',1);",
-                     "INSERT INTO notes (notepad_id, title, content, keywords, date_create, status) "
-                     "VALUES ((SELECT MAX(id) FROM notepads),'Вторая заметка','<p>Текст второй заметки.</p>', ',вторая, начало', '"+date+"',1);",
+                             "INSERT INTO notes (notepad_id, title, content, keywords, date_create,date_update, status) "
+                     "VALUES ((SELECT MAX(id) FROM notepads),'Первая заметка','<p>Привет, Мир!</p>', ',старт,','"+date+"','"+date+"',1);",
+                     "INSERT INTO notes (notepad_id, title, content, keywords, date_create,date_update, status) "
+                     "VALUES ((SELECT MAX(id) FROM notepads),'Вторая заметка','<p>Текст второй заметки.</p>', ',вторая, начало', '"+date+"','"+date+"',1);",
                     "INSERT INTO notepads (name) "
                     "VALUES ('Ещё один блокнот');",
-                    "INSERT INTO notes (notepad_id, title, content, keywords, date_create, status) "
-                    "VALUES ((SELECT MAX(id) FROM notepads),'Заметка из второго блокнота','<p>Текст заметки (второй блокнот).</p>', ',вторая, начало','"+date+"',1);"
+                    "INSERT INTO notes (notepad_id, title, content, keywords, date_create,date_update, status) "
+                    "VALUES ((SELECT MAX(id) FROM notepads),'Заметка из второго блокнота','<p>Текст заметки (второй блокнот).</p>', ',вторая, начало','"+date+"','"+date+"',1);"
                      };
-    // QString sql[] = {
-    //     "CREATE TABLE notepads ("
-    //     "id         INTEGER PRIMARY KEY AUTOINCREMENT,"
-    //     "name       TEXT NOT NULL"
-    //     ");",
-    //     "CREATE TABLE notes ("
-    //     "id         INTEGER PRIMARY KEY AUTOINCREMENT,"
-    //     "notepad_id INTEGER NOT NULL,"
-    //     "title       TEXT NOT NULL,"
-    //     "content     TEXT NOT NULL,"
-    //     "keywords    TEXT NOT NULL,"
-    //     "date_create TEXT NOT NULL,"
-    //     "date_update TEXT,"
-    //     "status      INTEGER NOT NULL,"
-    //     "checked     INTEGER"
-    //     ");",
-    //     "INSERT INTO notepads (name) "
-    //     "VALUES ('Первый блокнот');",
-    //     "INSERT INTO notes (notepad_id, title, content, keywords, date_create, status) "
-    //     "VALUES ((SELECT MAX(id) FROM notepads),'Первая заметка','<p>Привет, Мир!</p>', ',старт,','"+date+"',1);",
-    //     "INSERT INTO notes (notepad_id, title, content, keywords, date_create, status) "
-    //     "VALUES ((SELECT MAX(id) FROM notepads),'Вторая заметка','<p>Текст второй заметки.</p>', ',вторая, начало','"+date+"',1);",
-    //     "INSERT INTO notepads (name) "
-    //     "VALUES ('Ещё один блокнот');",
-    //     "INSERT INTO notes (notepad_id, title, content, keywords, date_create, status) "
-    //     "VALUES ((SELECT MAX(id) FROM notepads),'Заметка из второго блокнота','<p>Текст заметки (второй блокнот).</p>', ',вторая, начало','"+date+"',1);"
-    // };
+
 
     char *zErrMsg = 0;
     for(QString& query: sql){

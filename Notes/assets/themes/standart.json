@@ -121,5 +121,57 @@
 
         }
 
+    },
+    "editor":{
+        "title":{
+            "font-size": "16px",
+            "color":"#828282",
+            "border":"2px solid #fff",
+            "background": "#fff",
+            "margin":"5px"
+        },
+        "title-focus":{
+            "border-bottom-color": "#86d4fc",
+            "color":"#555"
+        },
+        "tags":{
+            "font-size": "11px",
+            "color":"#777",
+            "border":"none",
+            "margin-bottom":"5px"
+        },
+        "buttons-bar":{
+            "background":"#eee",
+            "border":"1px solid #eee",
+            "border-radius":"3px",
+            "margin":"5px",
+            "min-height":"34px"
+        },
+        "buttons":{
+            "normal-button":{
+                 "background":"#eee",
+                 "border": "1px solid #eee",
+                 "border-radius": "3px",
+                 "min-height":"24px",
+                 "min-width": "24px"
+            },
+            "hover-button":{
+                "background":"#ddd",
+                "border-color": "#aaa"
+            },
+            "save-button-icon":"assets/themes/standart/floppy-disk.svg",
+            "bold-button-icon":"assets/themes/standart/bold.svg",
+            "italic-button-icon":"assets/themes/standart/italic.svg",
+            "underline-button-icon":"assets/themes/standart/underline.svg",
+            "strikethrough-button-icon":"assets/themes/standart/strikethrough.svg",
+            "tags-icon":"assets/themes/standart/tags.png",
+            "prev-button-icon":"assets/themes/standart/prev_item.png",
+            "next-button-icon":"assets/themes/standart/next_item.png"
+        },
+        "prev-button":{
+            "border":"1px solid #ccc",
+            "background": "#eee"
+        }
+
     }
 }

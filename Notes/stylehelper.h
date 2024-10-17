@@ -10,6 +10,18 @@ namespace Tab{
         TASKS
     };
 }
+namespace EditorStyle{
+    enum Buttons{
+        SAVE_BTN,
+        BOLD_BTN,
+        ITALIC_BTN,
+        UNDERLINE_BTN,
+        STRIKETHROUGH_BTN,
+        TAGS_ICO,
+        PREV_BTN,
+        NEXT_BTN
+    };
+}
 class StyleHelper
 {
 public:
@@ -29,6 +41,8 @@ public:
     QString getLeftTabTitleStyle();
     QString getWindowButtonQSS(const QJsonObject& obj, const QString& name);
     QString getIconPath(Tab::TabIcon type);
+    QString getEditorStyle();
+    QString getEditorButtonIconPath(EditorStyle::Buttons type);
     int     getTabHeight();
     QString getTreeWidgetStyle();
     static QSize winIconSize;
@@ -50,6 +64,8 @@ private:
         QString leftTabTitle;
         QString tabIcon[3];
         int     tabHeight;
+        QString editorQSS;
+        QString editorButtonIcon[8];
 
     };
     AppTheme* appTheme;

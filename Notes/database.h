@@ -32,6 +32,8 @@ public:
     bool connectDb();
     QVector<Notepad> getNotepads();
     Notes getNotes(int notepadId);
+    Notes getAllNotes();
+    Notes getAllTasks();
     Note  getNote(int noteId);
 
 private:
